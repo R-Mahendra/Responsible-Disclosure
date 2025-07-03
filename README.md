@@ -9,6 +9,14 @@ This repository documents security vulnerabilities I responsibly disclosed to va
 
 ---
 
+- I'm not asking for prizes.
+- I'm not asking for applause.
+- I'm just asking for clarity.
+
+I want this record to last forever , because safety is not just about repairs, it's about attitude.
+
+---
+
 # 🧠 Why This Exists
 
 As a security researcher and bug bounty hunter, I believe in **responsible disclosure**.  
