@@ -1,0 +1,55 @@
+Description:
+DOM XSS (Cross-Site Scripting) adalah jenis serangan keamanan web di mana penyerang mencoba memanipulasi kode JavaScript yang dijalankan di browser klien dengan memasukkan script berbahaya ke dalam halaman web yang dikirim ke browser klien.
+DOM XSS terjadi ketika kode JavaScript pada halaman web mengambil input dari pengguna dan menggunakannya untuk membangun elemen HTML tanpa memvalidasi atau membersihkan input terlebih dahulu. Hal ini memungkinkan penyerang untuk menyisipkan script berbahaya yang akan dijalankan oleh browser klien pada saat halaman web dimuat.
+Sebagai contoh, penyerang dapat mencoba memanipulasi halaman web untuk menampilkan informasi palsu atau menipu pengguna untuk mengklik tautan yang membawa mereka ke situs web berbahaya. 
+
+
+
+Scenario:
+1.Penyerang menemukan celah keamanan pada aplikasi web yang memungkinkan untuk melakukan serangan XSS. Namun beberapa bulan lalu saya pernah melaporkannya, tim pengembang aplikasi web belum mengambil tindakan pencegahan terhadap celah keamanan tersebut.
+
+2.Penyerang memanfaatkan fitur Iframe Product yang tersedia pada aplikasi web untuk memuat konten dari halaman lain.
+
+3.Penyerang melakukan manipulasi terhadap kode HTML pada Iframe Product sehingga terlihat seperti Iframe Product asli yang ada pada aplikasi web. Manipulasi ini dilakukan dengan cara memodifikasi CSS dan mengubah atribut-atribut HTML pada Iframe Product.
+
+4.Penyerang menambahkan payload CSRF pada kode HTML Iframe Product yang telah dimanipulasi tersebut. Payload CSRF ini akan memicu serangan XSS.
+
+5.Penyerang menciptakan link palsu yang mengarah ke halaman Iframe Product palsu yang telah dimanipulasi sebelumnya.
+
+6.Penyerang meminta korban untuk mengklik link palsu tersebut, yang akan memunculkan halaman web Iframe Product yang palsu tersebut.
+
+7.Apabaila Korban Memutuskan untuk membeli produk atau klik "BUY" maka akan menuju Url https://paymes.shop/bug-bounty-234270859, Lalu dialihkan Kembali Ke URL Berbahaya Berupa Phising atau sejenisnya.
+
+Dalam skenario yang telah disebutkan, serangan DOM XSS terjadi ketika penyerang memanipulasi kode HTML pada Iframe Product yang ada di aplikasi web untuk menyisipkan skrip berbahaya. Penyerang melakukan manipulasi dengan mengubah atribut-atribut HTML dan CSS pada Iframe Product sehingga terlihat seperti Iframe Product asli yang ada pada aplikasi web.
+
+Setelah Iframe Product yang telah dimanipulasi itu dimuat oleh browser klien, skrip berbahaya yang telah disisipkan oleh penyerang akan dijalankan dan mengalihkan pengguna ke URL Phishing atau halaman web berbahaya lainnya.
+
+Penyerang memanfaatkan celah keamanan yang ada pada aplikasi web dan menggunakan kombinasi teknik manipulasi HTML dan skrip berbahaya untuk mengeksploitasi celah tersebut. Hal ini menunjukkan bahwa pengembang aplikasi web harus memvalidasi dan membersihkan input pengguna sebelum membangun elemen HTML agar dapat mencegah serangan DOM XSS dan serangan keamanan web lainnya.
+
+
+
+Step Exploit:
+1.Buka aplikasi web dan login menggunakan akun yang sudah terdaftar.
+2.Gunakan fitur Get Payment untuk membuat sebuah link produk.
+3.Salin source code iframe yang terdapat pada bagian Get Payment.
+4.Kunjungin link produk yang sudah dibuat copy url gambar produt.
+5.Gunakan perangkat lunak untuk mengedit kode HTML dan manipulasi tampilan iframe sehingga terlihat seperti produk yang asli. Selain itu, sisipkan payload CSRF pada bagian belakang tampilan yang telah dimanipulasi tersebut.
+6.Simpan perubahan dan kirimkan link produk yang telah dimanipulasi ke korban melalui email atau pesan singkat, Dan tunggu hingga korban membuka link produk yang telah dikirimkan dan melakukan pembelian atau checkout.
+
+
+
+Impact:
+1.pengguna bisa kehilangan akses atau kontrol terhadap akun atau informasi pribadi mereka. Jika pengguna mengikuti tautan palsu dan mengisi formulir atau masuk ke dalam halaman web yang dipalsukan, maka penyerang dapat mencuri informasi pribadi pengguna seperti kata sandi, alamat email, dan informasi kartu kredit.
+2.Website Yang dikelola Perusahaan paymes Menjadi wadah Kejahatan.
+3.Penyerang dapat menyisipkan kode malware pada halaman web yang telah dimanipulasi sehingga dapat menginfeksi komputer atau perangkat mobile pengguna. Malware ini dapat digunakan untuk mencuri data penting pengguna atau bahkan mengendalikan komputer atau perangkat mobile pengguna.
+
+
+
+Url Endpoint: https://paymes.shop/Example-123456789
+https://paymes.shop/bug-bounty-234270859
+
+
+OS: Google Chrome Version 113.0.5672.93 (Official Build) (64-bit)
+
+
+ref: https://owasp.org/www-community/attacks/DOM_Based_XSS

